@@ -5,3 +5,4 @@ This WAF version can be retrieved by this command:
 
 $ bzr co lp:~gjc/waf/cmd waf-cmd
 
+This is a fork of GNOME Python bindings.
