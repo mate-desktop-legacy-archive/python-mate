@@ -1,6 +1,6 @@
 INCLUDES = $(PYTHON_INCLUDES) $(PYGTK_CFLAGS)
 
-defsdir = $(datadir)/pygtk/2.0/defs
+defsdir = $(datadir)/pygtk/2.0/defs/mate
 defs_DATA = canvas.defs
 
 EXTRA_DIST = $(defs_DATA)
