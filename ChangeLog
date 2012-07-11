@@ -1,3 +1,18 @@
+commit c5a593e4353628d30d67a03cbdb536d6b3ae9a18
+Author: Stefano Karapetsas <stefano@karapetsas.com>
+Date:   Fri Mar 9 12:48:26 2012 +0100
+
+    update for MATE 1.2
+
+ AUTHORS           |    6 +
+ ChangeLog         | 3412 ++++-------------------------------------------------
+ ChangeLog.pre-2-0 | 1286 --------------------
+ README            |    1 +
+ autogen.sh        |    4 +-
+ configure.ac      |    2 +-
+ setup.py          |   26 +-
+ 7 files changed, 241 insertions(+), 4496 deletions(-)
+
 commit 7842204ae7cc0cafa1c810d0a9282dbd4e1fd072
 Author: Stefano Karapetsas <stefano@karapetsas.com>
 Date:   Fri Mar 9 12:43:17 2012 +0100
@@ -215,4 +230,4 @@ Date:   Sun Dec 11 12:44:27 2011 +0100
  tests/testvfs.py                                   |   24 +
  waf                                                |  Bin 0 -> 80959 bytes
  wscript                                            |  222 +
- 163 files changed, 88003 insertions(+), 0 deletions(-)
+ 163 files changed, 88003 insertions(+)
