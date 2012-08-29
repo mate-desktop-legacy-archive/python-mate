@@ -12,16 +12,6 @@
 
 ;; Enumerations and flags ...
 
-(define-enum HelpError
-  (in-module "Mate")
-  (c-name "MateHelpError")
-  (gtype-id "MATE_TYPE_HELP_ERROR")
-  (values
-    '("internal" "MATE_HELP_ERROR_INTERNAL")
-    '("not-found" "MATE_HELP_ERROR_NOT_FOUND")
-  )
-)
-
 (define-enum FileDomain
   (in-module "Mate")
   (c-name "MateFileDomain")
@@ -455,94 +445,6 @@
 
 
 
-;; From /usr/include/libmate-2.0/libmate/mate-help.h
-
-(define-function help_error_quark
-  (c-name "mate_help_error_quark")
-  (return-type "GQuark")
-)
-
-(define-function help_display
-  (c-name "mate_help_display")
-  (return-type "gboolean")
-  (parameters
-    '("const-char*" "file_name")
-    '("const-char*" "link_id")
-    '("GError**" "error")
-  )
-)
-
-(define-function help_display_with_doc_id
-  (c-name "mate_help_display_with_doc_id")
-  (return-type "gboolean")
-  (parameters
-    '("MateProgram*" "program")
-    '("const-char*" "doc_id")
-    '("const-char*" "file_name")
-    '("const-char*" "link_id")
-    '("GError**" "error")
-  )
-)
-
-(define-function help_display_desktop
-  (c-name "mate_help_display_desktop")
-  (return-type "gboolean")
-  (parameters
-    '("MateProgram*" "program")
-    '("const-char*" "doc_id")
-    '("const-char*" "file_name")
-    '("const-char*" "link_id")
-    '("GError**" "error")
-  )
-)
-
-(define-function help_display_uri
-  (c-name "mate_help_display_uri")
-  (return-type "gboolean")
-  (parameters
-    '("const-char*" "help_uri")
-    '("GError**" "error")
-  )
-)
-
-(define-function help_display_uri_with_env
-  (c-name "mate_help_display_uri_with_env")
-  (return-type "gboolean")
-  (parameters
-    '("const-char*" "help_uri")
-    '("char**" "envp")
-    '("GError**" "error")
-  )
-)
-
-(define-function help_display_with_doc_id_and_env
-  (c-name "mate_help_display_with_doc_id_and_env")
-  (return-type "gboolean")
-  (parameters
-    '("MateProgram*" "program")
-    '("const-char*" "doc_id")
-    '("const-char*" "file_name")
-    '("const-char*" "link_id")
-    '("char**" "envp")
-    '("GError**" "error")
-  )
-)
-
-(define-function help_display_desktop_with_env
-  (c-name "mate_help_display_desktop_with_env")
-  (return-type "gboolean")
-  (parameters
-    '("MateProgram*" "program")
-    '("const-char*" "doc_id")
-    '("const-char*" "file_name")
-    '("const-char*" "link_id")
-    '("char**" "envp")
-    '("GError**" "error")
-  )
-)
-
-
-
 ;; From /usr/include/libmate-2.0/libmate/mate-i18n.h
 
 (define-function i18n_get_language_list
@@ -946,11 +848,6 @@
 
 (define-function file_domain_get_type
   (c-name "mate_file_domain_get_type")
-  (return-type "GType")
-)
-
-(define-function help_error_get_type
-  (c-name "mate_help_error_get_type")
   (return-type "GType")
 )
 

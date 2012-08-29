@@ -3,13 +3,6 @@
 (include "mate-types.defs")
 
 
-(define-object About
-  (in-module "Mate")
-  (parent "GtkDialog")
-  (c-name "MateAbout")
-  (gtype-id "MATE_TYPE_ABOUT")
-)
-
 (define-object App
   (in-module "Mate")
   (parent "GtkWindow")
@@ -104,13 +97,6 @@
   (gtype-id "MATE_TYPE_ENTRY")
 )
 
-(define-object FileEntry
-  (in-module "Mate")
-  (parent "GtkVBox")
-  (c-name "MateFileEntry")
-  (gtype-id "MATE_TYPE_FILE_ENTRY")
-)
-
 (define-object FontPicker
   (in-module "Mate")
   (parent "GtkButton")
@@ -123,13 +109,6 @@
   (parent "GtkButton")
   (c-name "MateHRef")
   (gtype-id "MATE_TYPE_HREF")
-)
-
-(define-object IconEntry
-  (in-module "Mate")
-  (parent "GtkVBox")
-  (c-name "MateIconEntry")
-  (gtype-id "MATE_TYPE_ICON_ENTRY")
 )
 
 (define-object IconList
@@ -186,13 +165,6 @@
   (parent "GtkImage")
   (c-name "MatePixmap")
   (gtype-id "MATE_TYPE_PIXMAP")
-)
-
-(define-object PixmapEntry
-  (in-module "Mate")
-  (parent "MateFileEntry")
-  (c-name "MatePixmapEntry")
-  (gtype-id "MATE_TYPE_PIXMAP_ENTRY")
 )
 
 (define-object PropertyBox
@@ -403,28 +375,6 @@
   )
 )
 
-(define-flags IconLookupFlags
-  (in-module "Mate")
-  (c-name "MateIconLookupFlags")
-  (gtype-id "MATE_TYPE_ICON_LOOKUP_FLAGS")
-  (values
-    '("none" "MATE_ICON_LOOKUP_FLAGS_NONE")
-    '("embedding-text" "MATE_ICON_LOOKUP_FLAGS_EMBEDDING_TEXT")
-    '("show-small-images-as-themselves" "MATE_ICON_LOOKUP_FLAGS_SHOW_SMALL_IMAGES_AS_THEMSELVES")
-    '("allow-svg-as-themselves" "MATE_ICON_LOOKUP_FLAGS_ALLOW_SVG_AS_THEMSELVES")
-  )
-)
-
-(define-flags IconLookupResultFlags
-  (in-module "Mate")
-  (c-name "MateIconLookupResultFlags")
-  (gtype-id "MATE_TYPE_ICON_LOOKUP_RESULT_FLAGS")
-  (values
-    '("none" "MATE_ICON_LOOKUP_RESULT_FLAGS_NONE")
-    '("thumbnail" "MATE_ICON_LOOKUP_RESULT_FLAGS_THUMBNAIL")
-  )
-)
-
 (define-enum MDIMode
   (in-module "Mate")
   (c-name "MateMDIMode")
@@ -480,42 +430,7 @@
   )
 )
 
-(define-function about_get_type
-  (c-name "mate_about_get_type")
-  (return-type "GType")
-)
 
-(define-function about_new
-  (is-constructor-of "MateAbout")
-  (c-name "mate_about_new")
-  (return-type "GtkWidget*")
-  (parameters
-    '("const-gchar*" "name")
-    '("const-gchar*" "version")
-    '("const-gchar*" "copyright")
-    '("const-gchar*" "comments")
-    '("const-gchar**" "authors")
-    '("const-gchar**" "documenters")
-    '("const-gchar*" "translator_credits")
-    '("GdkPixbuf*" "logo_pixbuf")
-  )
-)
-
-(define-method construct
-  (of-object "MateAbout")
-  (c-name "mate_about_construct")
-  (return-type "none")
-  (parameters
-    '("const-gchar*" "name")
-    '("const-gchar*" "version")
-    '("const-gchar*" "copyright")
-    '("const-gchar*" "comments")
-    '("const-gchar**" "authors")
-    '("const-gchar**" "documenters")
-    '("const-gchar*" "translator_credits")
-    '("GdkPixbuf*" "logo_pixbuf")
-  )
-)
 
 (define-function app_helper_gettext
   (c-name "mate_app_helper_gettext")
@@ -2571,118 +2486,6 @@
   (return-type "none")
 )
 
-(define-function file_entry_get_type
-  (c-name "mate_file_entry_get_type")
-  (return-type "GType")
-)
-
-(define-function file_entry_new
-  (is-constructor-of "MateFileEntry")
-  (c-name "mate_file_entry_new")
-  (return-type "GtkWidget*")
-  (properties
-    '("history_id")
-    '("browse_dialog_title")
-  )
-)
-
-(define-method construct
-  (of-object "MateFileEntry")
-  (c-name "mate_file_entry_construct")
-  (return-type "none")
-  (parameters
-    '("const-char*" "history_id")
-    '("const-char*" "browse_dialog_title")
-  )
-)
-
-(define-method mate_entry
-  (of-object "MateFileEntry")
-  (c-name "mate_file_entry_mate_entry")
-  (return-type "GtkWidget*")
-)
-
-(define-method gtk_entry
-  (of-object "MateFileEntry")
-  (c-name "mate_file_entry_gtk_entry")
-  (return-type "GtkWidget*")
-)
-
-(define-method set_title
-  (of-object "MateFileEntry")
-  (c-name "mate_file_entry_set_title")
-  (return-type "none")
-  (parameters
-    '("const-char*" "browse_dialog_title")
-  )
-)
-
-(define-method set_default_path
-  (of-object "MateFileEntry")
-  (c-name "mate_file_entry_set_default_path")
-  (return-type "none")
-  (parameters
-    '("const-char*" "path")
-  )
-)
-
-(define-method set_directory_entry
-  (of-object "MateFileEntry")
-  (c-name "mate_file_entry_set_directory_entry")
-  (return-type "none")
-  (parameters
-    '("gboolean" "directory_entry")
-  )
-)
-
-(define-method get_directory_entry
-  (of-object "MateFileEntry")
-  (c-name "mate_file_entry_get_directory_entry")
-  (return-type "gboolean")
-)
-
-(define-method get_full_path
-  (of-object "MateFileEntry")
-  (c-name "mate_file_entry_get_full_path")
-  (return-type "char*")
-  (parameters
-    '("gboolean" "file_must_exist")
-  )
-)
-
-(define-method set_filename
-  (of-object "MateFileEntry")
-  (c-name "mate_file_entry_set_filename")
-  (return-type "none")
-  (parameters
-    '("const-char*" "filename")
-  )
-)
-
-(define-method set_modal
-  (of-object "MateFileEntry")
-  (c-name "mate_file_entry_set_modal")
-  (return-type "none")
-  (parameters
-    '("gboolean" "is_modal")
-  )
-)
-
-(define-method get_modal
-  (of-object "MateFileEntry")
-  (c-name "mate_file_entry_get_modal")
-  (return-type "gboolean")
-)
-
-(define-method set_directory
-  (of-object "MateFileEntry")
-  (c-name "mate_file_entry_set_directory")
-  (return-type "none")
-  (parameters
-    '("gboolean" "directory_entry")
-  )
-)
-
 (define-function font_picker_get_type
   (c-name "mate_font_picker_get_type")
   (return-type "GType")
@@ -2788,53 +2591,6 @@
   )
 )
 
-(define-function help_display_on_screen
-  (c-name "mate_help_display_on_screen")
-  (return-type "gboolean")
-  (parameters
-    '("const-char*" "file_name")
-    '("const-char*" "link_id")
-    '("GdkScreen*" "screen")
-    '("GError**" "error")
-  )
-)
-
-(define-function help_display_with_doc_id_on_screen
-  (c-name "mate_help_display_with_doc_id_on_screen")
-  (return-type "gboolean")
-  (parameters
-    '("MateProgram*" "program")
-    '("const-char*" "doc_id")
-    '("const-char*" "file_name")
-    '("const-char*" "link_id")
-    '("GdkScreen*" "screen")
-    '("GError**" "error")
-  )
-)
-
-(define-function help_display_desktop_on_screen
-  (c-name "mate_help_display_desktop_on_screen")
-  (return-type "gboolean")
-  (parameters
-    '("MateProgram*" "program")
-    '("const-char*" "doc_id")
-    '("const-char*" "file_name")
-    '("const-char*" "link_id")
-    '("GdkScreen*" "screen")
-    '("GError**" "error")
-  )
-)
-
-(define-function help_display_uri_on_screen
-  (c-name "mate_help_display_uri_on_screen")
-  (return-type "gboolean")
-  (parameters
-    '("const-char*" "help_uri")
-    '("GdkScreen*" "screen")
-    '("GError**" "error")
-  )
-)
-
 (define-function href_get_type
   (c-name "mate_href_get_type")
   (return-type "GType")
@@ -2910,114 +2666,6 @@
   (return-type "none")
 )
 
-(define-function icon_entry_get_type
-  (c-name "mate_icon_entry_get_type")
-  (return-type "GType")
-)
-
-(define-function icon_entry_new
-  (is-constructor-of "MateIconEntry")
-  (c-name "mate_icon_entry_new")
-  (return-type "GtkWidget*")
-  (properties
-    '("history_id")
-    '("browse_dialog_title")
-  )
-)
-
-(define-method construct
-  (of-object "MateIconEntry")
-  (c-name "mate_icon_entry_construct")
-  (return-type "none")
-  (parameters
-    '("const-gchar*" "history_id")
-    '("const-gchar*" "browse_dialog_title")
-  )
-)
-
-(define-method set_pixmap_subdir
-  (of-object "MateIconEntry")
-  (c-name "mate_icon_entry_set_pixmap_subdir")
-  (return-type "none")
-  (parameters
-    '("const-gchar*" "subdir")
-  )
-)
-
-(define-method get_filename
-  (of-object "MateIconEntry")
-  (c-name "mate_icon_entry_get_filename")
-  (return-type "gchar*")
-)
-
-(define-method set_filename
-  (of-object "MateIconEntry")
-  (c-name "mate_icon_entry_set_filename")
-  (return-type "gboolean")
-  (parameters
-    '("const-gchar*" "filename")
-  )
-)
-
-(define-method set_browse_dialog_title
-  (of-object "MateIconEntry")
-  (c-name "mate_icon_entry_set_browse_dialog_title")
-  (return-type "none")
-  (parameters
-    '("const-gchar*" "browse_dialog_title")
-  )
-)
-
-(define-method set_history_id
-  (of-object "MateIconEntry")
-  (c-name "mate_icon_entry_set_history_id")
-  (return-type "none")
-  (parameters
-    '("const-gchar*" "history_id")
-  )
-)
-
-(define-method set_max_saved
-  (of-object "MateIconEntry")
-  (c-name "mate_icon_entry_set_max_saved")
-  (return-type "none")
-  (parameters
-    '("guint" "max_saved")
-  )
-)
-
-(define-method pick_dialog
-  (of-object "MateIconEntry")
-  (c-name "mate_icon_entry_pick_dialog")
-  (return-type "GtkWidget*")
-)
-
-(define-method set_icon
-  (of-object "MateIconEntry")
-  (c-name "mate_icon_entry_set_icon")
-  (return-type "none")
-  (parameters
-    '("const-gchar*" "filename")
-  )
-)
-
-(define-method mate_file_entry
-  (of-object "MateIconEntry")
-  (c-name "mate_icon_entry_mate_file_entry")
-  (return-type "GtkWidget*")
-)
-
-(define-method mate_entry
-  (of-object "MateIconEntry")
-  (c-name "mate_icon_entry_mate_entry")
-  (return-type "GtkWidget*")
-)
-
-(define-method gtk_entry
-  (of-object "MateIconEntry")
-  (c-name "mate_icon_entry_gtk_entry")
-  (return-type "GtkWidget*")
-)
 
 (define-function icon_text_item_get_type
   (c-name "mate_icon_text_item_get_type")
@@ -4253,142 +3901,6 @@
   (of-object "MatePasswordDialog")
   (c-name "mate_password_dialog_anon_selected")
   (return-type "gboolean")
-)
-
-(define-function pixmap_entry_get_type
-  (c-name "mate_pixmap_entry_get_type")
-  (return-type "GType")
-)
-
-(define-function pixmap_entry_new
-  (is-constructor-of "MatePixmapEntry")
-  (c-name "mate_pixmap_entry_new")
-  (return-type "GtkWidget*")
-  (properties
-    '("history_id")
-    '("browse_dialog_title")
-    '("do_preview")
-  )
-)
-
-(define-method construct
-  (of-object "MatePixmapEntry")
-  (c-name "mate_pixmap_entry_construct")
-  (return-type "none")
-  (parameters
-    '("const-gchar*" "history_id")
-    '("const-gchar*" "browse_dialog_title")
-    '("gboolean" "do_preview")
-  )
-)
-
-(define-method set_pixmap_subdir
-  (of-object "MatePixmapEntry")
-  (c-name "mate_pixmap_entry_set_pixmap_subdir")
-  (return-type "none")
-  (parameters
-    '("const-gchar*" "subdir")
-  )
-)
-
-(define-method mate_file_entry
-  (of-object "MatePixmapEntry")
-  (c-name "mate_pixmap_entry_mate_file_entry")
-  (return-type "GtkWidget*")
-)
-
-(define-method mate_entry
-  (of-object "MatePixmapEntry")
-  (c-name "mate_pixmap_entry_mate_entry")
-  (return-type "GtkWidget*")
-)
-
-(define-method gtk_entry
-  (of-object "MatePixmapEntry")
-  (c-name "mate_pixmap_entry_gtk_entry")
-  (return-type "GtkWidget*")
-)
-
-(define-method scrolled_window
-  (of-object "MatePixmapEntry")
-  (c-name "mate_pixmap_entry_scrolled_window")
-  (return-type "GtkWidget*")
-)
-
-(define-method preview_widget
-  (of-object "MatePixmapEntry")
-  (c-name "mate_pixmap_entry_preview_widget")
-  (return-type "GtkWidget*")
-)
-
-(define-method set_preview
-  (of-object "MatePixmapEntry")
-  (c-name "mate_pixmap_entry_set_preview")
-  (return-type "none")
-  (parameters
-    '("gboolean" "do_preview")
-  )
-)
-
-(define-method set_preview_size
-  (of-object "MatePixmapEntry")
-  (c-name "mate_pixmap_entry_set_preview_size")
-  (return-type "none")
-  (parameters
-    '("gint" "preview_w")
-    '("gint" "preview_h")
-  )
-)
-
-(define-method get_filename
-  (of-object "MatePixmapEntry")
-  (c-name "mate_pixmap_entry_get_filename")
-  (return-type "gchar*")
-)
-
-(define-function pixmap_get_type
-  (c-name "mate_pixmap_get_type")
-  (return-type "GType")
-)
-
-(define-function pixmap_new_from_file
-  (is-constructor-of "MatePixmapEntry")
-  (c-name "mate_pixmap_new_from_file")
-  (return-type "GtkWidget*")
-  (parameters
-    '("const-gchar*" "filename")
-  )
-)
-
-(define-function pixmap_new_from_file_at_size
-  (is-constructor-of "MatePixmapEntry")
-  (c-name "mate_pixmap_new_from_file_at_size")
-  (return-type "GtkWidget*")
-  (parameters
-    '("const-gchar*" "filename")
-    '("gint" "width")
-    '("gint" "height")
-  )
-)
-
-(define-function pixmap_new_from_xpm_d
-  (is-constructor-of "MatePixmapEntry")
-  (c-name "mate_pixmap_new_from_xpm_d")
-  (return-type "GtkWidget*")
-  (parameters
-    '("const-gchar**" "xpm_data")
-  )
-)
-
-(define-function pixmap_new_from_xpm_d_at_size
-  (is-constructor-of "MatePixmapEntry")
-  (c-name "mate_pixmap_new_from_xpm_d_at_size")
-  (return-type "GtkWidget*")
-  (parameters
-    '("const-gchar**" "xpm_data")
-    '("gint" "width")
-    '("gint" "height")
-  )
 )
 
 (define-function new_from_mate_pixmap

@@ -11,8 +11,6 @@ headers
 #include <matecomponent/matecomponent-ui-type-builtins.h>
 #define MATE_TYPE_APP_BAR MATE_TYPE_APPBAR
 #define MATE_APP_BAR MATE_APPBAR
-#define NO_IMPORT_PYMATEVFS
-#include "pymatevfs.h"
 #include "config.h"
 
 %%
@@ -58,95 +56,6 @@ ignore
   mate_message_box_new
   mate_icon_lookup_sync
 
-%%
-override mate_about_new kwargs
-static int
-_wrap_mate_about_new (PyGObject *self, PyObject *args, PyObject *kwargs)
-{
-    static char  *kwlist[] = { "name", "version", "copyright", "comments",
-			       "authors", "documenters", "translator_credits",
-			       "logo_pixbuf", NULL };
-    
-    char       *name, *version, *copyright, *comments;
-    PyObject   *pyauthors;
-    PyObject   *pydocumenters = Py_None;
-    char       *translator_credits = NULL;
-    PyGObject  *pypixbuf = NULL;
-    int         n_authors;
-    char      **authors;
-    int         i;
-    int         n_documenters;
-    char      **documenters;
-    GdkPixbuf  *pixbuf;
-    
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-                                     "ssssO|OzO!:MateAbout.__init__", kwlist,
-                                     &name, &version, &copyright, &comments,
-				     &pyauthors, &pydocumenters,
-				     &translator_credits, &PyGdkPixbuf_Type, &pypixbuf)) {
-	return -1;
-    }
-
-    if (!PyList_Check(pyauthors) && !PyTuple_Check(pyauthors)) {
-	PyErr_SetString(PyExc_TypeError, "5th argument not a tuple or list");
-	return -1;
-    }
-
-    if (pydocumenters != Py_None && !PyList_Check(pydocumenters) && !PyTuple_Check(pydocumenters)) {
-	PyErr_SetString(PyExc_TypeError, "6th argument not a tuple or list");
-	return -1;
-    }
-    
-    n_authors = PySequence_Length(pyauthors);
-    authors = g_new(gchar *, n_authors + 1);
-    for (i = 0; i < n_authors; i++) {
-        PyObject *item = PySequence_GetItem(pyauthors, i);
-        Py_DECREF(item); 
-        authors[i] = PyString_AsString(item);
-    }
-    authors[n_authors] = NULL;
-    
-    if (pydocumenters != Py_None) {
-	    n_documenters = PySequence_Length(pydocumenters);
-	    documenters = g_new(gchar *, n_documenters + 1);
-	    for (i = 0; i < n_documenters; i++) {
-		    PyObject *item = PySequence_GetItem(pydocumenters, i);
-		    Py_DECREF(item); 
-		    documenters[i] = PyString_AsString(item);
-	    }
-	    documenters[n_documenters] = NULL;
-    } else {
-	    documenters = NULL;
-    }
-
-    /* if translator_credits is "translator_credits", set it to NULL */
-    if (translator_credits &&
-	!strcmp(translator_credits, "translator_credits"))
-	translator_credits = NULL;
-
-    if (pypixbuf != NULL) {
-	pixbuf = GDK_PIXBUF(pypixbuf->obj);
-    } else {
-	pixbuf = NULL;
-    }
-    
-    self->obj = (GObject*)mate_about_new (name,
-					   version,
-					   copyright,
-					   comments,
-					   (const gchar**)authors,
-					   (const gchar**)documenters,
-					   translator_credits,
-					   pixbuf);
-    if (!self->obj) {
-        PyErr_SetString(PyExc_RuntimeError,"could not create MateAbout object");
-        return -1;
-    }
-
-    g_object_ref(self->obj); /* we don't own the first reference of windows */
-    pygobject_register_wrapper((PyObject *)self);
-    return 0;
-}
 %%
 override mate_icon_list_get_icon_data kwargs
 static PyObject *
@@ -347,72 +256,6 @@ _wrap_mate_gtk_module_info_get(PyObject *self)
     ret = (MateModuleInfo *) mate_gtk_module_info_get();
     /* pyg_boxed_new handles NULL checking */
     return pyg_boxed_new(MATE_TYPE_MODULE_INFO, ret, TRUE, TRUE);
-}
-%%
-override mate_icon_lookup kwargs
-static PyObject *
-_wrap_mate_icon_lookup(PyObject *self, PyObject *args, PyObject *kwargs)
-{
-    static char *kwlist[] = { "icon_theme", "thumbnail_factory", "file_uri",
-                              "custom_icon", "flags", "mime_type", "file_info", NULL };
-    PyGObject *icon_theme;
-    char *file_uri, *custom_icon = NULL, *mime_type = NULL;
-    gchar *ret;
-    PyObject *file_info = NULL;
-    PyObject *py_flags = NULL;
-    PyObject *py_thumb_fact;
-    MateThumbnailFactory *thumbnail_factory = NULL;
-    MateIconLookupFlags flags;
-    MateIconLookupResultFlags result_flags = 0;
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!Os|sOsO!:icon_lookup", kwlist,
-                                     &PyGtkIconTheme_Type, &icon_theme,
-                                     &py_thumb_fact,
-                                     &file_uri, &custom_icon,
-                                     &py_flags, &mime_type,
-                                     &PyMateVFSFileInfo_Type, &file_info))
-        return NULL;
-
-    if ((file_info && !mime_type) || (!file_info && mime_type)) {
-        PyErr_SetString(PyExc_TypeError, "file_info and mime_type mutually exclusive");
-        return NULL;
-    }
-
-    if (py_flags) {
-        if (pyg_flags_get_value(MATE_TYPE_ICON_LOOKUP_FLAGS, py_flags, (gint *)&flags))
-            return NULL;
-    } else
-        flags = MATE_ICON_LOOKUP_FLAGS_NONE;
-    
-    if (pygobject_check(((PyGObject *) py_thumb_fact), &PyMateThumbnailFactory_Type))
-        thumbnail_factory = MATE_THUMBNAIL_FACTORY(((PyGObject *) py_thumb_fact)->obj);
-    else if (py_thumb_fact == Py_None)
-        thumbnail_factory = NULL;
-    else {
-        PyErr_SetString(PyExc_TypeError,
-                        "thumbnail_factory has to be a MateThumbnailFactory or None");
-        return NULL;
-    }
-
-    if (file_info)
-        ret = mate_icon_lookup(GTK_ICON_THEME(icon_theme->obj),
-                                thumbnail_factory,
-                                file_uri, custom_icon,
-                                pymate_vfs_file_info_get(file_info),
-                                mime_type, flags, &result_flags);
-    else
-        ret = mate_icon_lookup_sync(GTK_ICON_THEME(icon_theme->obj),
-                                     thumbnail_factory,
-                                     file_uri, custom_icon,
-                                     flags, &result_flags);
-    if (ret) {
-        PyObject *py_ret = Py_BuildValue("si", ret, result_flags);
-        g_free(ret);
-        return py_ret;
-    }
-      /* The function should never return NULL; if it does, it's an internal bug */
-    PyErr_SetString(PyExc_RuntimeError, "internal error");
-    return NULL;
 }
 %%
 override mate_appbar_new kwargs

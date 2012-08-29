@@ -651,26 +651,6 @@ _wrap_mate_popt_parse(PyObject *self, PyObject *args, PyObject *kwargs)
     return Py_BuildValue("(NN)", py_leftover_args, argdict);
 }
 %%
-override mate_help_display kwargs
-static PyObject *
-_wrap_mate_help_display(PyObject *self, PyObject *args, PyObject *kwargs)
-{
-    static char *kwlist[] = { "doc_name", "link_id", NULL };
-    char *doc_name, *link_id = NULL;
-    int ret;
-    GError *error = NULL;
-    PyObject *py_ret;
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s|z:help_display", kwlist, &doc_name, &link_id))
-        return NULL;
-    ret = mate_help_display(doc_name, link_id, &error);
-    if (pyg_error_check(&error))
-        return NULL;
-    py_ret = ret ? Py_True : Py_False;
-    Py_INCREF(py_ret);
-    return py_ret;
-}
-%%
 override libmate_module_info_get noargs
 static PyObject *
 _wrap_libmate_module_info_get(PyObject *self)
