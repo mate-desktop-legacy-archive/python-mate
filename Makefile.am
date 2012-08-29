@@ -18,10 +18,6 @@ if BUILD_MATECONF
 SUBDIRS += mateconf
 endif
 
-if BUILD_MATEVFS
-SUBDIRS += matevfs
-endif
-
 if BUILD_MATECANVAS
 SUBDIRS += matecanvas
 endif
@@ -56,14 +52,6 @@ EXTRA_DIST = \
   examples/mateconf/basic-mateconf-app.py \
   examples/mateconf/simple-controller.py \
   examples/mateconf/simple-view.py \
-  examples/vfs/shell.py \
-  examples/vfs/sync-xfer.py \
-  examples/vfs/async-xfer.py \
-  examples/vfs/async.py \
-  examples/vfs/cancellation.py \
-  examples/vfs/pygvfsmethod/README \
-  examples/vfs/pygvfsmethod/pyfs.conf \
-  examples/vfs/pygvfsmethod/pyfs.py \
   examples/popt/popt.py \
   examples/popt/goption.py
 

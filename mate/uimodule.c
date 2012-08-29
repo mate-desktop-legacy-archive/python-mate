@@ -6,7 +6,6 @@
 
 /* include this first, before NO_IMPORT_PYGOBJECT is defined */
 #include <pygobject.h>
-#include "pymatevfs.h"
 
 #include <libmateui/libmateui.h>
 
@@ -20,7 +19,6 @@ initui (void)
     PyObject *m, *d;
 	
     init_pygobject ();
-    init_pymatevfs ();
 
     m = Py_InitModule ("ui", pyui_functions);
     d = PyModule_GetDict (m);

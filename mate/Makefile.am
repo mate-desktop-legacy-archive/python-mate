@@ -14,7 +14,7 @@ pkgpyexecdir = $(pyexecdir)/gtk-2.0
 common_ldflags = -module -avoid-version $(PYTHON_LDFLAGS)
 
 pymatedir = $(pkgpythondir)/mate
-pymate_PYTHON = __init__.py canvas.py vfs.py
+pymate_PYTHON = __init__.py canvas.py
 
 pymateexecdir = $(pkgpyexecdir)/mate
 pymateexec_LTLIBRARIES =
@@ -36,7 +36,7 @@ mate.c: mate.defs mate.override
 if BUILD_MATEUI
 pymateexec_LTLIBRARIES += ui.la
 endif
-ui_la_CFLAGS = $(MATEUI_CFLAGS) -I$(top_srcdir)/matevfs
+ui_la_CFLAGS = $(MATEUI_CFLAGS)
 ui_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initui
 ui_la_LIBADD = $(MATEUI_LIBS) $(PYTHON_LIBS)
 ui_la_SOURCES = uimodule.c
@@ -64,7 +64,6 @@ ui.c: ui.defs ui.override
 
 install-exec-hook: # Remove old deprecated modules
 	-$(LIBTOOL) --mode=uninstall rm -f $(pymateexecdir)/canvas.la
-	-$(LIBTOOL) --mode=uninstall rm -f $(pymateexecdir)/vfs.la
 
 EXTRA_DIST += wscript
 

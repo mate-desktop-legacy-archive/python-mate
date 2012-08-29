@@ -2,12 +2,11 @@ import os
 import sys
 
 #if not os.environ.has_key('DIST_CHECK'):
-#    sys.path = ['..', '../matevfs', '../matecanvas'] + sys.path
+#    sys.path = ['..', '../matecanvas'] + sys.path
 
 
 modules = [
     "matecomponent",
-    "matevfs",
     "matecomponent.ui",
     "matecomponent",
     "mateconf",

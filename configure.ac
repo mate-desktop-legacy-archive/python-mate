@@ -3,7 +3,7 @@ AC_PREREQ(2.52)
 
 dnl the mate-python version number
 m4_define(mate_python_major_version, 1)
-m4_define(mate_python_minor_version, 4)
+m4_define(mate_python_minor_version, 5)
 m4_define(mate_python_micro_version, 0)
 m4_define(mate_python_version, dnl
   mate_python_major_version.mate_python_minor_version.mate_python_micro_version)
@@ -19,7 +19,6 @@ m4_define(gtk_required_version,               2.6.0)
 m4_define(libmate_required_version,          1.1.0)
 m4_define(libmateui_required_version,        1.1.0)
 m4_define(libmatecanvas_required_version,    1.1.0)
-m4_define(libmatevfs_required_version,       1.1.0)
 m4_define(mateconf_required_version,             1.1.0)
 m4_define(matecomponent_activation_required_version, 1.1.0)
 m4_define(libmatecomponent_required_version,         1.1.0)
@@ -113,7 +112,6 @@ dnl required version substitutions for use in the spec file
 PYGTK_VERSION=pygtk_required_version
 LIBMATECANVAS_VERSION=libmatecanvas_required_version
 LIBMATE_VERSION=libmate_required_version
-LIBMATEVFS_VERSION=libmatevfs_required_version
 GTK_VERSION=gtk_required_version
 PYMATECORBA_VERSION=pymatecorba_required_version
 MATECOMPONENT_ACTIVATION_VERSION=matecomponent_activation_required_version
@@ -123,7 +121,6 @@ MATECONF_VERSION=mateconf_required_version
 AC_SUBST(PYGTK_VERSION)
 AC_SUBST(LIBMATECANVAS_VERSION)
 AC_SUBST(LIBMATE_VERSION)
-AC_SUBST(LIBMATEVFS_VERSION)
 AC_SUBST(GLIB_VERSION)
 AC_SUBST(GTK_VERSION)
 AC_SUBST(PYMATECORBA_VERSION)
@@ -159,7 +156,7 @@ AC_ARG_ENABLE([gtk-doc],
 AM_CONDITIONAL(BUILD_DOCS, [test "$enable_gtk_doc" = "yes"])
 
 dnl default bindings to build:
-default_bindings_on="mate mateui matecanvas matevfs matevfsmatecomponent pyvfsmodule mateconf matecomponent_activation matecomponent matecomponentui"
+default_bindings_on="mate mateui matecanvas mateconf matecomponent_activation matecomponent matecomponentui"
 default_bindings_off=""
 default_bindings_all="$default_bindings_on $default_bindings_off"
 
@@ -224,50 +221,6 @@ fi
 AM_CONDITIONAL(BUILD_MATECANVAS, $build_matecanvas)
 if test -n "$export_dynamic"; then
   MATECANVAS_LIBS=`echo $MATECANVAS_LIBS | sed -e "s/$export_dynamic//"`
-fi
-
-dnl should we build the matevfs module?
-AC_ARG_BINDING([matevfs], [ON])
-if $build_matevfs; then
-  PKG_CHECK_MODULES(MATEVFS, [mate-vfs-2.0 >= libmatevfs_required_version],
-    build_matevfs=true,
-    build_matevfs=false)
-  AC_SUBST(MATEVFS_CFLAGS)
-  AC_SUBST(MATEVFS_LIBS)
-fi
-AM_CONDITIONAL(BUILD_MATEVFS, $build_matevfs)
-if test -n "$export_dynamic"; then
-  MATEVFS_LIBS=`echo $MATEVFS_LIBS | sed -e "s/$export_dynamic//"`
-fi
-
-dnl should we build matecomponent support into the matevfs module?
-AC_ARG_BINDING([matevfsmatecomponent], [ON], [matevfs.matecomponent])
-if $build_matevfsmatecomponent; then
-  PKG_CHECK_MODULES(MATEVFSMATECOMPONENT, [mate-vfs-2.0 >= libmatevfs_required_version dnl
-				     matecomponent-activation-2.0 >= matecomponent_activation_required_version
-				     pymatecorba-2 >= pymatecorba_required_version],
-    build_matevfsmatecomponent=true,
-    build_matevfsmatecomponent=false)
-  AC_SUBST(MATEVFSMATECOMPONENT_CFLAGS)
-  AC_SUBST(MATEVFSMATECOMPONENT_LIBS)
-fi
-AM_CONDITIONAL(BUILD_MATEVFSMATECOMPONENT, $build_matevfs && $build_matevfsmatecomponent)
-if test -n "$export_dynamic"; then
-  MATEVFSMATECOMPONENT_LIBS=`echo $MATEVFSMATECOMPONENT_LIBS | sed -e "s/$export_dynamic//"`
-fi
-
-
-dnl should we build the matevfs python module bridge?
-AC_ARG_BINDING([pyvfsmodule], [ON], [bridge])
-if $build_pyvfsmodule; then
-  PKG_CHECK_MODULES(MATE_VFS_MODULE, [mate-vfs-module-2.0 >= libmatevfs_required_version dnl
-				       matecomponent-activation-2.0 >= matecomponent_activation_required_version],
-    build_pyvfsmodule=true,
-    build_pyvfsmodule=false)
-fi
-AM_CONDITIONAL(BUILD_PYVFSMODULE, $build_matevfs && $build_pyvfsmodule)
-if test -n "$export_dynamic"; then
-  MATE_VFS_MODULE_LIBS=`echo $MATE_VFS_MODULE_LIBS | sed -e "s/$export_dynamic//"`
 fi
 
 dnl should we build the mateconf module?
@@ -336,10 +289,8 @@ JH_ADD_CFLAG([-fno-strict-aliasing])
 AC_CONFIG_FILES(
   Makefile
   docs/Makefile
-  docs/matevfs/Makefile
   mateconf/Makefile
   mate/Makefile
-  matevfs/Makefile
   matecanvas/Makefile
   matecomponent/Makefile
   tests/Makefile
@@ -354,9 +305,6 @@ echo
 $build_mate             && echo     mate
 $build_mateui           && $have_pymatecorba && echo     mate.ui
 $build_matecanvas       && echo     matecanvas
-$build_matevfs          && echo     matevfs
-$build_matevfsmatecomponent    && echo     matevfs.matecomponent
-$build_pyvfsmodule       && echo     mate-vfs python module support
 $build_mateconf             && echo     mateconf
 $build_matecomponent            && $have_pymatecorba && echo     matecomponent
 $build_matecomponent_activation && $have_pymatecorba && echo     matecomponent.activation
@@ -368,9 +316,6 @@ echo
 $build_mate             || echo     mate
 $build_mateui           && $have_pymatecorba || echo     mate.ui
 $build_matecanvas       || echo     matecanvas
-$build_matevfs          || echo     matevfs
-$build_matevfsmatecomponent    || echo     matevfs.matecomponent
-$build_pyvfsmodule       || echo     mate-vfs python module support
 $build_mateconf             || echo     mateconf
 $build_matecomponent            && $have_pymatecorba || echo     matecomponent
 $build_matecomponent_activation && $have_pymatecorba || echo     matecomponent.activation

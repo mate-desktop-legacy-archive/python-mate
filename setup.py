@@ -47,7 +47,6 @@ PYMATECORBA_REQUIRED_VERSION            = '1.1.0'
 LIBMATE_REQUIRED_VERSION           = '1.1.0'
 LIBMATEUI_REQUIRED_VERSION         = '1.1.0'
 LIBMATECANVAS_REQUIRED_VERSION     = '1.1.0'
-LIBMATEVFS_REQUIRED_VERSION        = '1.1.0'
 LIBZVT_REQUIRED_VERSION             = '2.0.0'
 MATECONF_REQUIRED_VERSION              = '1.1.0'
 MATECOMPONENT_ACTIVATION_REQUIRED_VERSION  = '1.1.0'
@@ -74,7 +73,6 @@ if version < [2, 2]:
     raise SystemExit, \
           "Python 2.2 or higher is required, %s found" % str_version
 
-install_vfsmethod = 0
 class MatePythonInstallLib(InstallLib):
     def run(self):
         self.add_template_option('VERSION', VERSION)
@@ -83,22 +81,11 @@ class MatePythonInstallLib(InstallLib):
         self.install_template('mate-python-2.0.pc.in',
                               os.path.join(self.libdir, 'pkgconfig'))
 
-        if install_vfsmethod:
-            self.install_vfsmethod()
-            
         # Modify the base installation dir
         install_dir = os.path.join(self.install_dir, PYGTK_SUFFIX_LONG)
         self.set_install_dir(install_dir)
-                                          
+
         InstallLib.run(self)
-        
-    def install_vfsmethod(self):
-        libdir = '/'.join(self.install_dir.split('/')[:-3])
-        module_dir = os.path.join(libdir, 'mate-vfs-2.0', 'modules')
-        module_file = os.path.join(self.build_dir, 'libpythonmethod.so')
-        if (os.path.exists(module_file) and
-            not os.path.exists(os.path.join(self.build_dir, module_file))):
-            self.copy_file(module_file, module_dir)
         
 if not pkgc_version_check('pygtk-2.0', 'PyGTK', PYGTK_REQUIRED_VERSION):
     raise SystemExit, "Aborting"
@@ -155,16 +142,6 @@ libmatecanvas = TemplateExtension(name='canvas',
                                             'mate/canvas.c'],
                                    register=['mate/canvas.defs'],
                                    override='mate/canvas.override')
-
-libmatevfs = PkgConfigExtension(name='mate.vfs',
-                                 pkc_name='mate-vfs-2.0',
-                                 pkc_version=LIBMATEVFS_REQUIRED_VERSION,
-                                 sources=['mate/vfs-dir-handle.c',
-                                          'mate/vfs-file-info.c',
-                                          'mate/vfs-handle.c',
-                                          'mate/vfsmodule.c',
-                                          'mate/vfs-uri.c',
-                                          'mate/vfs-context.c'])
 
 libzvt = TemplateExtension(name='zvt',
                            pkc_name='libzvt-2.0',
@@ -284,19 +261,6 @@ if have_pymatecorba and libmateui.can_build():
 if libmatecanvas.can_build():
     ext_modules.append(libmatecanvas)
     data_files.append((DEFS_DIR, ('mate/canvas.defs',)))    
-if libmatevfs.can_build():
-    #libdir = getoutput('pkg-config --variable=libdir mate-vfs-module-2.0')
-    #pythondir = os.path.join(libdir, 'mate-vfs-2.0', 'modules', 'python')
-    #GLOBAL_MACROS.append(('MATE_VFS_PYTHON_DIR', '"%s"' % pythondir))
-    #libpythonmethod = PkgConfigExtension(name='libpythonmethod',
-    #                   pkc_name='mate-vfs-module-2.0',
-    #                   pkc_version=LIBMATEVFS_REQUIRED_VERSION,
-    #                   sources=['mate/mate-vfs-python-method.c'])
-    #if libpythonmethod.can_build():
-    #    install_vfsmethod = 1
-    #    ext_modules.append(libpythonmethod)
-        
-    ext_modules.append(libmatevfs)
 if libzvt.can_build():
     ext_modules.append(libzvt)
     data_files.append((DEFS_DIR, ('mate/zvt.defs',)))
